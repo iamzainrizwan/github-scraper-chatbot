@@ -1,7 +1,9 @@
 [project]
 name = "github-scraper-chatbot"
 version = "0.1.0"
-description = "Add your description here"
+description = "Creates GUI application that allows a user to enter a GitHub username and an output file path. Program scrapes user's (public) GitHub repos into an Excel file. Also includes embedded chatbot using Google Gemini Flash API to answer questions about the repo names." 
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "customtkinter>=5.2.2",
+]
