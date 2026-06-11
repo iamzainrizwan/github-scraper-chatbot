@@ -1,6 +1,7 @@
-def main():
-    print("Hello from github-scraper-chatbot!")
+# pyright: reportUnknownMemberType=false
 
+from app import App
 
 if __name__ == "__main__":
-    main()
+    app: App = App()
+    app.mainloop()
