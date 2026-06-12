@@ -39,7 +39,7 @@ class App(ctk.CTk):
         self.button: ctk.CTkButton = ctk.CTkButton(
             self,
             text="start search",
-            command=self.button_callback,
+            command=self._run_scraper(),
             corner_radius=0,
             font=FONT,
         )
@@ -49,5 +49,5 @@ class App(ctk.CTk):
         # TODO
         pass
 
-    def button_callback(self):
+    def _run_scraper(self):
         print("button clicked!")

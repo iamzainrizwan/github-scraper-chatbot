@@ -5,5 +5,7 @@ description = "Creates GUI application that allows a user to enter a GitHub user
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "beautifulsoup4>=4.15.0",
     "customtkinter>=5.2.2",
+    "requests>=2.34.2",
 ]
