@@ -5,18 +5,26 @@ from bs4 import BeautifulSoup
 
 # itemprop="name codeRepository"
 class GitHubScraper:
+    def __init__(self) -> None:
+        self.headers = {"User-Agent": "github-scraper-chatbot"}
+        self.session = requests.session()
+
     def get_repos(self, username: str) -> list[str]:
         repos: list[str] = []
         n = 1
         while True:
             link = f"https://github.com/{username}?tab=repositories&page={n}"
-            response: requests.Response = requests.get(link)
+            response = self.session.get(link, headers=self.headers, timeout=10)
 
             soup = BeautifulSoup(response.text, "html.parser")
-            elements = soup.select('[itemprop="name codeRepository"]')
-            if len(elements) == 0:
+            repo_elements = soup.select('[itemprop="name codeRepository"]')
+
+            if not repo_elements:
                 break
-            for e in elements:
+
+            for e in repo_elements:
                 repos.append(e.text.strip())
+
             n += 1
+
         return repos
