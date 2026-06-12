@@ -9,3 +9,4 @@ if __name__ == "__main__":
     ghs: GitHubScraper = GitHubScraper()
     print(ghs.get_repos("iamzainrizwan"))
     print(ghs.get_repos("torvalds"))
+    print(ghs.get_repos("sindresorhus"))

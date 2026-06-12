@@ -8,11 +8,15 @@ class GitHubScraper:
     def get_repos(self, username: str) -> list[str]:
         repos: list[str] = []
         n = 1
-        link = f"https://github.com/{username}?tab=repositories&page={n}"
-        response: requests.Response = requests.get(link)
+        while True:
+            link = f"https://github.com/{username}?tab=repositories&page={n}"
+            response: requests.Response = requests.get(link)
 
-        soup = BeautifulSoup(response.text, "html.parser")
-        elements = soup.select('[itemprop="name codeRepository"]')
-        for e in elements:
-            repos.append(e.text.strip())
+            soup = BeautifulSoup(response.text, "html.parser")
+            elements = soup.select('[itemprop="name codeRepository"]')
+            if len(elements) == 0:
+                break
+            for e in elements:
+                repos.append(e.text.strip())
+            n += 1
         return repos
