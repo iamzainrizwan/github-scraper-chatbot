@@ -7,10 +7,9 @@ import threading
 import customtkinter as ctk
 from tkinter import filedialog
 
-from scraper import GitHubScraper
-from chatbot import GeminiChatBot
-from utils import export_to_excel
-from utils import strip_md
+from services import GitHubScraper, GeminiChatBot
+from utils.export import export_to_excel
+from utils.text import strip_md
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("theme.json")
