@@ -10,16 +10,19 @@ class GeminiChatBot:
     def __init__(self, repos: list[str]) -> None:
         self.client = genai.Client(api_key=GEMINI_API_KEY)
         repo_text = ", ".join(repos)
-        self.chat: Chat = self.client.chats.create(model="gemini-3.5-flash")
-        response = self.chat.send_message(f"""
-        You are an assisstant that analyses GitHub repositories to screen programming experience for a Data Scientist role.
+        self.chat: Chat = self.client.chats.create(
+            model="gemini-3.5-flash",
+            config={
+                "system_instruction": f""" 
+                You are an assisstant that analyses GitHub repositories to screen programming experience for a Data Scientist role.
 
-        You MUST ONLY use the repository names provided below. 
-
-        Repositories:
-        {repo_text}
-        """)
-        print(response.text)
+                You MUST ONLY use the repository names provided below. 
+    
+                Repositories:
+                {repo_text}
+                """
+            },
+        )
 
     def ask(self, question: str) -> str | None:
         response = self.chat.send_message(question)

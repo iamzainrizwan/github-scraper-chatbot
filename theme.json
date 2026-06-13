@@ -44,5 +44,13 @@
     "text_color": ["#eaeaea", "#eaeaea"],
     "scrollbar_button_color": ["#2a2a2a", "#2a2a2a"],
     "scrollbar_button_hover_color": ["#3a3a3a", "#3a3a3a"]
+  }, 
+    "CTkScrollbar": {
+    "corner_radius": 0,
+    "border_width": 1,
+    "fg_color": ["#0a0a0a", "#0a0a0a"],
+    "border_color": ["#1a1a1a", "#1a1a1a"],
+    "button_color": ["#2a2a2a", "#2a2a2a"],
+    "button_hover_color": ["#3a3a3a", "#3a3a3a"]
   }
 }
