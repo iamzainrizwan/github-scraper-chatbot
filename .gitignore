@@ -12,3 +12,6 @@ wheels/
 #excel files from testing
 *.xlsx
 .~lock.*
+
+#environment variables
+.env
