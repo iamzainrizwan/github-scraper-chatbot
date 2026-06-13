@@ -1,6 +1,9 @@
 # pyright: reportMissingTypeStubs=false
 # pyright: reportUnknownMemberType=false
 
+from typing import Callable, Any
+import threading
+
 import customtkinter as ctk
 from tkinter import filedialog
 
@@ -82,12 +85,9 @@ class App(ctk.CTk):
 
         self.sendButton.pack()
 
-        pass
-
     def _run_scraper(self):
         username = self.githubTextbox.get().strip()
         path = self.fileTextbox.get().strip()
-
         if not username:
             return
 
@@ -95,17 +95,28 @@ class App(ctk.CTk):
             path = filedialog.asksaveasfilename(
                 defaultextension=".xlsx", filetypes=[("Excel files", "*.xlsx")]
             )
+        if not path:
+            return
+        self.set_ui_busy(True)
+        self.write_chat("scraping...")
 
-        print("scraping")
-        self.repos = self.scraper.get_repos(username)
+        def task(username: str = username, path: str = path):
 
-        if path:
-            export_to_excel(path, self.repos, username)
+            print("scraping")
+            repos = self.scraper.get_repos(username)
 
-        print("creating chatbot")
-        self.bot = GeminiChatBot(self.repos)
-        self.write_chat(f"loaded {len(self.repos)} repos for {username}")
-        print("search complete")
+            if path:
+                export_to_excel(path, repos, username)
+
+            def update_ui():
+                self.repos = repos
+                self.bot = GeminiChatBot(repos)
+                self.write_chat(f"loaded {len(repos)} repos for {username}")
+                self.set_ui_busy(False)
+
+            self.after(0, update_ui)
+
+        self.run_in_thread(task)
 
     def _ask_bot(self):
         if not self.bot:
@@ -115,12 +126,36 @@ class App(ctk.CTk):
         question = self.chatEntry.get().strip()
         if not question:
             return
-        self.write_chat(f"\n > you: {question}")
+        self.chatEntry.delete(0, "end")
+        self.write_chat(f"\n> you: {question}")
+        self.write_chat("\nwaiting for response...")
+        self.set_ui_busy(True)
 
-        response = self.bot.ask(question)
-        self.write_chat(f"\n > gemini: {strip_md(response)}")
+        def task(question: str = question):
+            if self.bot is None:
+                return
+
+            response = self.bot.ask(question)
+            if response is None:
+                response = ""
+
+            def update_ui():
+                self.write_chat(f"\n> gemini: {strip_md(response)}")
+                self.set_ui_busy(False)
+
+            _ = self.after(0, update_ui)
+
+        self.run_in_thread(task)
 
     def write_chat(self, text: str):
         self.chatBox.configure(state="normal")
         self.chatBox.insert("end", text + "\n")
         self.chatBox.configure(state="disabled")
+
+    def run_in_thread(self, func: Callable[[], Any]):
+        threading.Thread(target=func, daemon=True).start()
+
+    def set_ui_busy(self, busy: bool):
+        state = "disabled" if busy else "normal"
+        self.button.configure(state=state)
+        self.sendButton.configure(state=state)
