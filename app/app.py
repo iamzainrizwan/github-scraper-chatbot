@@ -12,7 +12,7 @@ from utils.export import export_to_excel
 from utils.text import strip_md
 
 ctk.set_appearance_mode("dark")
-ctk.set_default_color_theme("theme.json")
+ctk.set_default_color_theme("app/theme.json")
 FONT: tuple[str, int] = ("JetBrains Mono", 13)
 
 
