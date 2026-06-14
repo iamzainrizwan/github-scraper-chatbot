@@ -30,10 +30,12 @@ uv sync
 
 **2. set your Gemini API key**
 
-get a free key at https://ai.google.dev, then:
+get a free key at https://ai.google.dev, then copy `.env.example` to `.env` and fill in your key:
 ```bash
-export GEMINI_API_KEY='your_key_here'
+cp .env.example .env
 ```
+
+make sure `.env` is in your `.gitignore`.
 
 **3. run**
 ```bash
