@@ -81,6 +81,8 @@ class App(ctk.CTk):
             self.chatbot_frame, width=600, font=FONT
         )
 
+        self.chatEntry.bind("<Return>", lambda event: self._ask_bot())
+
         self.chatEntry.pack()
 
         self.sendButton: ctk.CTkButton = ctk.CTkButton(
@@ -106,8 +108,6 @@ class App(ctk.CTk):
         self.write_chat("scraping...")
 
         def task(username: str = username, path: str = path):
-
-            print("scraping")
             try:
                 repos = self.scraper.get_repos(username)
 
