@@ -49,5 +49,5 @@ uv run main.py
 3. click **start search** — repos are scraped, exported, and loaded into the chatbot
 4. ask the chatbot anything about the repositories
 
-## AI usage
-AI tools were used only as a debugging aid and for clarifying library usage. no full solutions or architectural design decisions were sourced from AI. the final codebase was implemented, reviewed, and tested independently. 
+## ai usage
+ai tools were used only as a debugging aid and for clarifying library usage. no full solutions or architectural design decisions were sourced from AI. the final codebase was implemented, reviewed, and tested independently. 
