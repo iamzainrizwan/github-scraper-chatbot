@@ -4,17 +4,26 @@ from bs4 import BeautifulSoup
 
 
 class GitHubUserNotFound(Exception):
+    """raised when a github username does not exist"""
+
     pass
 
 
 # itemprop="name codeRepository"
 class GitHubScraper:
+    """scrapes public repos from a github user's profile page"""
+
     def __init__(self) -> None:
         self.headers = {"User-Agent": "github-scraper-chatbot"}
         self.session = requests.session()
 
     def get_repos(self, username: str) -> list[str]:
-        repos: list[str] = []
+        """fetches all public repo names for a given github username
+
+        paginates through the repos tab until no more  results are found.
+        raises GitHubUserNotFound if profile 404s
+        """
+        repos = []
 
         profile = f"https://github.com/{username}"
         response = self.session.get(profile, headers=self.headers, timeout=10)

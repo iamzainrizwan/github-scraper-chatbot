@@ -18,6 +18,8 @@ FONT: tuple[str, int] = ("JetBrains Mono", 13)
 
 
 class App(ctk.CTk):
+    """main application window - contains github scraper and gemini chatbot UI."""
+
     def __init__(self):
         super().__init__()
 
@@ -37,6 +39,7 @@ class App(ctk.CTk):
         self.build_chatbot_section()
 
     def build_scraper_section(self):
+        """builds github username input, filepath input, and search button"""
         self.githubLabel: ctk.CTkLabel = ctk.CTkLabel(
             self.scraper_frame, text="github username:", corner_radius=0, font=FONT
         )
@@ -67,6 +70,7 @@ class App(ctk.CTk):
         self.button.pack()
 
     def build_chatbot_section(self):
+        """builds chat history display, message input, send button"""
         self.chatBox: ctk.CTkTextbox = ctk.CTkTextbox(
             self.chatbot_frame, width=800, height=300, font=FONT
         )
@@ -86,6 +90,7 @@ class App(ctk.CTk):
         self.sendButton.pack()
 
     def _run_scraper(self):
+        """validates inputs, then scrapes repos and initialises chatbot in background thread"""
         username = self.githubTextbox.get().strip()
         path = self.fileTextbox.get().strip()
         if not username:
@@ -128,6 +133,7 @@ class App(ctk.CTk):
         self.run_in_thread(task)
 
     def _ask_bot(self):
+        """sends current chat entry to the chatbot in a background thread"""
         if not self.bot:
             self.write_chat("run scraper first")
             return
@@ -157,14 +163,17 @@ class App(ctk.CTk):
         self.run_in_thread(task)
 
     def write_chat(self, text: str):
+        """appends text to chat display - safe to call from MAIN THREAD ONLY"""
         self.chatBox.configure(state="normal")
         self.chatBox.insert("end", text + "\n")
         self.chatBox.configure(state="disabled")
 
     def run_in_thread(self, func: Callable[[], Any]):
+        """runs a callable in a daemon thread."""
         threading.Thread(target=func, daemon=True).start()
 
     def set_ui_busy(self, busy: bool):
+        """disables or emabled interactive UI elements during background tasks."""
         state = "disabled" if busy else "normal"
         self.button.configure(state=state)
         self.sendButton.configure(state=state)
