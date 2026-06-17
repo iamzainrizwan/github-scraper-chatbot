@@ -1,13 +1,14 @@
 # pyright: reportMissingTypeStubs=false
 # pyright: reportUnknownMemberType=false
 
-from typing import Callable, Any
 import threading
+from tkinter import filedialog
+from typing import Any, Callable
 
 import customtkinter as ctk
-from tkinter import filedialog
 
-from services import GitHubScraper, GeminiChatBot
+from services import GeminiChatBot, GitHubScraper
+from services.scraper import GitHubUserNotFound
 from utils.export import export_to_excel
 from utils.text import strip_md
 
@@ -102,18 +103,27 @@ class App(ctk.CTk):
         def task(username: str = username, path: str = path):
 
             print("scraping")
-            repos = self.scraper.get_repos(username)
+            try:
+                repos = self.scraper.get_repos(username)
 
-            if path:
-                export_to_excel(path, repos, username)
+                if path:
+                    export_to_excel(path, repos, username)
 
-            def update_ui():
-                self.repos = repos
-                self.bot = GeminiChatBot(repos)
-                self.write_chat(f"loaded {len(repos)} repos for {username}")
-                self.set_ui_busy(False)
+                def update_ui():
+                    self.repos = repos
+                    self.bot = GeminiChatBot(repos)
+                    self.write_chat(f"loaded {len(repos)} repos for {username}")
+                    self.set_ui_busy(False)
 
-            self.after(0, update_ui)
+                self.after(0, update_ui)
+            except GitHubUserNotFound as e:
+                error_msg = str(e)
+
+                def update_ui():
+                    self.write_chat(error_msg)
+                    self.set_ui_busy(False)
+
+                self.after(0, update_ui)
 
         self.run_in_thread(task)
 

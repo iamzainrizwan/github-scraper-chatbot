@@ -3,6 +3,10 @@ import requests
 from bs4 import BeautifulSoup
 
 
+class GitHubUserNotFound(Exception):
+    pass
+
+
 # itemprop="name codeRepository"
 class GitHubScraper:
     def __init__(self) -> None:
@@ -11,6 +15,12 @@ class GitHubScraper:
 
     def get_repos(self, username: str) -> list[str]:
         repos: list[str] = []
+
+        profile = f"https://github.com/{username}"
+        response = self.session.get(profile, headers=self.headers, timeout=10)
+
+        if response.status_code == 404:
+            raise GitHubUserNotFound(f"gitHub user {username} does not exist")
         n = 1
         while True:
             link = f"https://github.com/{username}?tab=repositories&page={n}"
